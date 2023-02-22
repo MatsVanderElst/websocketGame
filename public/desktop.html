@@ -34,7 +34,6 @@
         socket.on('connect', () => {
           console.log(`Connected: ${socket.id}`);
           const url = `${new URL(`/controller.html?id=${socket.id}`, window.location)}`;
-          $url.setAttribute('href', url);
 
           const typeNumber = 4;
           const errorCorrectionLevel = 'L';
