@@ -12,18 +12,31 @@
 
 <body>
   <div id="qr"></div>
-  <div class="#cursor"></div>
+  <div id="myId"></div>
+  <style>
+    #myId {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background-color: red;
+      transition: 0.2s;
+    }
+  </style>
   <canvas class="canvas"></canvas>
   <script src="/socket.io/socket.io.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
   <script>
     {
-      
-      let socket; // will be assigned a value later
 
+      let socket; // will be assigned a value later
+      
       const init = () => {
-        
+        const box = document.getElementById('myId');
+        let x = 0;
+        let y = 0;
+        console.log(box);
         socket = io.connect('/');
+
         socket.on('connect', () => {
           console.log(`Connected: ${socket.id}`);
           const url = `${new URL(`/controller.html?id=${socket.id}`, window.location)}`;
@@ -39,16 +52,27 @@
 
         //could've had one event for all moves but i did it for the sport
         socket.on(`moveUp`, (data) => {
+          y -= 10;
           console.log("move up");
+          box.parseInt(box.style.top) - 5 + "px";
         });
         socket.on(`moveDown`, (data) => {
+          y += 10;
           console.log("move down");
+          box.style.top = y + "px";
         });
         socket.on(`moveLeft`, (data) => {
+          y -= 10;
           console.log("move left");
+          box.style.left = x + "px";
         });
         socket.on(`moveRight`, (data) => {
+          y += 10;
           console.log("move right");
+          box.style.left = x + "px";
+        });
+        socket.on(`shoot`, (data) => {
+          console.log("pew pew", data);
         });
       };
 

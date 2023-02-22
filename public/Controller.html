@@ -16,15 +16,12 @@
     <button class="buttonDown" onclick="handleMove('moveDown')">DOWN</button>
     <button class="buttonLeft" onclick="handleMove('moveLeft')">LEFT</button>
     <button class="buttonRight" onclick="handleMove('moveRight')">RIGHT</button>
+    <button class="buttonShoot" onclick="handleSchoot()">SHOOT</button>
     <script src="/socket.io/socket.io.js"></script>
     <script>
         {
 
             let socket; // will be assigned a value later
-            const left = 37;
-            const up = 38;
-            const right = 39;
-            const down = 40;
             
             const getUrlParameter = name => {
                 name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
@@ -37,6 +34,13 @@
                 console.log(direction);
                 if (socket.connected) {
                     socket.emit(`move`, {targetSocketId: targetSocketId, direction: direction});
+                }
+            };
+
+            function handleSchoot() {
+                console.log("pew pew pew");
+                if (socket.connected) {
+                    socket.emit(`shoot`, {targetSocketId: targetSocketId});
                 }
             };
 

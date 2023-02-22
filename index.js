@@ -12,7 +12,10 @@ io.on('connection', socket => {
   console.log('Socket connected', socket.id);
 
 
-
+  socket.on('shoot', (data) => {
+    io.to(data.targetSocketId).emit('shoot');
+    console.log("sent pew pew")
+})
 
   socket.on('move', (data) => {
     //TODO: check wich key was pressed on the controller
@@ -35,9 +38,8 @@ io.on('connection', socket => {
         io.to(data.targetSocketId).emit('moveRight');
         console.log("sent right direction")
         break;
-
-
       default:
+      
         break;
     }
     
