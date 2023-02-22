@@ -6,11 +6,25 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server);
 
-const clients = {};
-io.on('connection', socket => {
-  
-  console.log('Socket connected', socket.id);
+const users = {};
 
+io.on('connection', socket => {
+  console.log(`Connection`);
+  users[socket.id] = {
+    id: socket.id
+  };
+  socket.on('update', (targetSocketId, data) => {
+    if (!users[targetSocketId]) {
+      return; // do nothing
+    }
+    // forward the update to that particular user
+    socket.to(targetSocketId).emit('update', data);
+  });
+  socket.on('disconnect', () => {
+    console.log('client disconnected');
+    delete users[socket.id];
+  });  
+  
   socket.on('message', message => {
     console.log('message', message);
     io.sockets.emit(`message`, message);
