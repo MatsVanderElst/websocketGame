@@ -1,32 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Socket.io Controller</title>
-  <style>
-    html {
-      box-sizing: border-box;
-    }
-    *, *:before, *:after {
-      box-sizing: inherit;
-    }
-    html, body {
-      height: 100%;
-      margin: 0;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="/socket.io/socket.io.js"></script>
+    <title>Socket.io Controller</title>
+    <style>
+        html {
+        box-sizing: border-box;
+        }
+        *, *:before, *:after {
+        box-sizing: inherit;
+        }
+        html, body {
+        height: 100%;
+        margin: 0;
+        }
 
-    .cursor {
-      position: absolute;
-      width: 1rem;
-      height: 1rem;
-      margin-left: -.5rem;
-      margin-right: -.5rem;
-      background: red;
-      border-radius: 50% 50%;
-    }
-  </style>
+        .cursor {
+        position: absolute;
+        width: 1rem;
+        height: 1rem;
+        margin-left: -.5rem;
+        margin-right: -.5rem;
+        background: red;
+        border-radius: 50% 50%;
+        }
+    </style>
 </head>
 <body>
   <script src="/socket.io/socket.io.js"></script>

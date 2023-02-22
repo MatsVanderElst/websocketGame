@@ -6,33 +6,30 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server);
 
-const users = {};
-
+const clients = {};
 io.on('connection', socket => {
-  console.log(`Connection`);
-  users[socket.id] = {
-    id: socket.id
-  };
+  clients[socket.id] = { id: socket.id };
+  console.log('Socket connected', socket.id);
+
+  clients[socket.id].x = 0;
+  clients[socket.id].y = 0;
+
   socket.on('update', (targetSocketId, data) => {
-    if (!users[targetSocketId]) {
-      return; // do nothing
+    if (!clients[targetSocketId]) {
+      return;
     }
-    // forward the update to that particular user
-    socket.to(targetSocketId).emit('update', data);
+    clients[socket.id].x = data.x;
+    clients[socket.id].y = data.y;
+    io.to(targetSocketId).emit('update', data);
   });
+
   socket.on('disconnect', () => {
-    console.log('client disconnected');
-    delete users[socket.id];
-  });  
-  
-  socket.on('message', message => {
-    console.log('message', message);
-    io.sockets.emit(`message`, message);
+    delete clients[socket.id];
   });
 });
 
 app.use(express.static('public'));
 
 server.listen(port, () => {
- console.log(`App listening on port ${port}!`);
+  console.log(`App listening on port ${port}!`);
 });
