@@ -1,65 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>MazeGame Controller</title>
 </head>
+
 <body>
-    <button class="buttonUp">UP</button>
-    <button class="buttonDown">DOWN</button>
-    <button class="buttonLeft">LEFT</button>
-    <button class="buttonRight">RIGHT</button>
-  <script src="/socket.io/socket.io.js"></script>
-  <script>
-  {
-    
-    let socket; // will be assigned a value later
-    
-    const init = () => {
-      targetSocketId = getUrlParameter('id');
-      if (!targetSocketId) {
-        alert(`Missing target ID in querystring`);
-        return;
-      }
-      socket = io.connect('/');
-      socket.on('connect', () => {
-        console.log(`Connected: ${socket.id}`);
-      });
-      window.addEventListener(`keyUp`, e => handleKeyUp(e));
-      window.addEventListener(`touchmove`, e => handleTouchMove(e));
-    };
+    <button class="buttonUp" onclick="handleMove('moveUp')">UP</button>
+    <button class="buttonDown" onclick="handleMove('moveDown')">DOWN</button>
+    <button class="buttonLeft" onclick="handleMove('moveLeft')">LEFT</button>
+    <button class="buttonRight" onclick="handleMove('moveRight')">RIGHT</button>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        {
 
-    const getUrlParameter = name => {
-      name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-      const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-      const results = regex.exec(location.search);
-      return results === null ? false : decodeURIComponent(results[1].replace(/\+/g, ' '));
-    };
+            let socket; // will be assigned a value later
+            const left = 37;
+            const up = 38;
+            const right = 39;
+            const down = 40;
+            
+            const getUrlParameter = name => {
+                name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+                const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+                const results = regex.exec(location.search);
+                return results === null ? false : decodeURIComponent(results[1].replace(/\+/g, ' '));
+            };
 
-    const handleKeyUp = e => {
-      if (socket.connected) {
-        socket.emit(`update`, targetSocketId, {
-         
-        });
-      }
-    };
+            function handleMove (direction) {
+                console.log(direction);
+                if (socket.connected) {
+                    socket.emit(`move`, {targetSocketId: targetSocketId, direction: direction});
+                }
+            };
 
-    const handleTouchMove = e => {
-      if (socket.connected) {
-        socket.emit(`update`, targetSocketId, {
-          x: e.touches[0].clientX / window.innerWidth,
-          y: e.touches[0].clientY / window.innerHeight
-        });
-      }
-    };
+            const init = () => {
+                targetSocketId = getUrlParameter('id');
+                if (!targetSocketId) {
+                    alert(`Missing target ID in querystring`);
+                    return;
+                }
+                socket = io.connect('/');
+                socket.on('connect', () => {
+                    console.log(`Connected: ${socket.id}`);
+                });
+               
+                window.addEventListener(`onkeydown`, e => handleKeyDown(e));
 
-    init();
-  }
-  </script>
+
+            };
+
+
+
+            init();
+        }
+    </script>
 </body>
+
 </html>

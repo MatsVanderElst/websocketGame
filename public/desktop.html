@@ -37,6 +37,7 @@
           document.getElementById('qr').innerHTML = qr.createImgTag(4);
         });
 
+        //could've had one event for all moves but i did it for the sport
         socket.on(`moveUp`, (data) => {
           console.log("move up");
         });

@@ -12,11 +12,35 @@ io.on('connection', socket => {
   console.log('Socket connected', socket.id);
 
 
- 
 
-  socket.on('keyUp', (targetSocketId, data) => {
+
+  socket.on('move', (data) => {
     //TODO: check wich key was pressed on the controller
-    io.to(targetSocketId).emit('moveUp');
+    /* io.to(targetSocketId).emit('moveUp'); */
+    console.log(data);
+    switch (data.direction) {
+      case "moveUp":
+        io.to(data.targetSocketId).emit('moveUp');
+        console.log("sent up direction")
+        break;
+      case "moveDown":
+        io.to(data.targetSocketId).emit('moveDown');
+        console.log("sent down direction")
+        break;
+      case "moveLeft":
+        io.to(data.targetSocketId).emit('moveLeft');
+        console.log("sent left direction")
+        break;
+      case "moveRight":
+        io.to(data.targetSocketId).emit('moveRight');
+        console.log("sent right direction")
+        break;
+
+
+      default:
+        break;
+    }
+    
   });
 
   socket.on('disconnect', () => {
