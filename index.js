@@ -8,19 +8,15 @@ const io = new Server(server);
 
 const clients = {};
 io.on('connection', socket => {
-  clients[socket.id] = { id: socket.id };
+  clients[socket.id] = { steps: 0 };
   console.log('Socket connected', socket.id);
 
-  clients[socket.id].x = 0;
-  clients[socket.id].y = 0;
 
-  socket.on('update', (targetSocketId, data) => {
-    if (!clients[targetSocketId]) {
-      return;
-    }
-    clients[socket.id].x = data.x;
-    clients[socket.id].y = data.y;
-    io.to(targetSocketId).emit('update', data);
+ 
+
+  socket.on('keyUp', (targetSocketId, data) => {
+    //TODO: check wich key was pressed on the controller
+    io.to(targetSocketId).emit('moveUp');
   });
 
   socket.on('disconnect', () => {

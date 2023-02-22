@@ -11,10 +11,6 @@
 </head>
 
 <body>
-  <form id="msgForm" method="post" action="">
-    <input id="msgInput" type="text" name="msgInput" />
-    <button type="submit">Send Message</button>
-  </form>
   <div id="qr"></div>
   <div class="#cursor"></div>
   <canvas class="canvas"></canvas>
@@ -22,18 +18,16 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
   <script>
     {
-      const $messages = document.getElementById('messages');
-      const $url = document.getElementById('url');
-
+      
       let socket; // will be assigned a value later
 
       const init = () => {
         
-       
         socket = io.connect('/');
         socket.on('connect', () => {
           console.log(`Connected: ${socket.id}`);
           const url = `${new URL(`/controller.html?id=${socket.id}`, window.location)}`;
+          console.log(url);
 
           const typeNumber = 4;
           const errorCorrectionLevel = 'L';
@@ -41,39 +35,20 @@
           qr.addData(url);
           qr.make();
           document.getElementById('qr').innerHTML = qr.createImgTag(4);
-
-          window.addEventListener(`mousemove`, e => {
-            socket.emit(`update`, targetSocketId, {
-              x: e.clientX / window.innerWidth,
-              y: e.clientY / window.innerHeight
-            });
-          });
-          window.addEventListener(`touchmove`, e => {
-            socket.emit(`update`, targetSocketId, {
-              x: e.touches[0].clientX / window.innerWidth,
-              y: e.touches[0].clientY / window.innerHeight
-            });
-          });
         });
 
-        socket.on(`update`, data => {
-          let $cursor = document.querySelector(`#cursor`);
-          if (!$cursor) {
-            $cursor = document.createElement(`div`);
-            $cursor.classList.add(`cursor`);
-            $cursor.setAttribute(`id`, `cursor`);
-            document.body.appendChild($cursor);
-          }
-          $cursor.style.left = `${data.x * window.innerWidth}px`;
-          $cursor.style.top = `${data.y * window.innerHeight}px`;
+        socket.on(`moveUp`, (data) => {
+          console.log("move up");
         });
-      };
-
-      const getUrlParameter = name => {
-        name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-        const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-        const results = regex.exec(location.search);
-        return results === null ? false : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        socket.on(`moveDown`, (data) => {
+          console.log("move down");
+        });
+        socket.on(`moveLeft`, (data) => {
+          console.log("move left");
+        });
+        socket.on(`moveRight`, (data) => {
+          console.log("move right");
+        });
       };
 
       init();
