@@ -12,7 +12,7 @@
 
 <body>
   <div id="qr"></div>
-  <canvas class="canvas" width="600" height="800"></canvas>
+  <canvas class="canvas" width="400" height="600"></canvas>
   <script src="/socket.io/socket.io.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
   <script>
@@ -22,6 +22,8 @@
       const box = document.getElementById('myId');
       let x = 0;
       let y = 0;
+      let tx = 0;
+      let ty = 0;
       const wid = 20; //width of the drawn rectangle
       const hei = 20; //height of the drawn rectangle
       const canvas = document.querySelector("canvas");
@@ -31,6 +33,20 @@
         ctx.fillStyle = '#666'; // Fill color of rectangle drawn
         ctx.fillRect(x, y, wid, hei); //This will draw a rectangle of 20x20
       }
+
+      const respawnTarget = () => {
+        ctx.clearRect(tx, ty, 500, 500);
+        tx = Math.floor(Math.random() * 400);
+        ty = Math.floor(Math.random() * 600);
+        redrawTarget();
+      }
+
+      const redrawTarget = () => {
+        ctx.clearRect(tx, ty, 20, 20);
+        ctx.fillStyle = 'green'; // Fill color of rectangle drawn
+        ctx.fillRect(tx, ty, wid, hei); //This will draw a rectangle of 20x20
+      }
+
 
 
       const init = () => {
@@ -49,45 +65,48 @@
           qr.make();
           document.getElementById('qr').innerHTML = qr.createImgTag(4);
 
+          respawnTarget();
           drawRect(x, y, wid, hei); //Drawing rectangle on initial load
         });
 
         //could've had one event for all moves but i did it for the sport
         socket.on(`moveUp`, (data) => {
-          y -= 10;
+          ctx.clearRect(x, y, 20, 20);
+          y -= 20;
           console.log("move up");
-          /* comment this below do draw path  */
-          ctx.clearRect(0, 0, 500, 500);
           //Drawing rectangle at new position
+          redrawTarget();
           drawRect(x, y, wid, hei);
-
         });
         socket.on(`moveDown`, (data) => {
-          y += 10;
+          ctx.clearRect(x, y, 20, 20);
+          y += 20;
           console.log("move down");
-          /* comment this below do draw path  */
-          ctx.clearRect(0, 0, 500, 500);
           //Drawing rectangle at new position
+          redrawTarget();
           drawRect(x, y, wid, hei);
         });
         socket.on(`moveLeft`, (data) => {
-          x -= 10;
+          ctx.clearRect(x, y, 20, 20);
+          x -= 20;
           console.log("move left");
-          /* comment this below do draw path  */
-          ctx.clearRect(0, 0, 500, 500);
           //Drawing rectangle at new position
+          redrawTarget();
           drawRect(x, y, wid, hei);
         });
         socket.on(`moveRight`, (data) => {
-          x += 10;
+          ctx.clearRect(x, y, 20, 20);
+          x += 20;
           console.log("move right");
-          /* comment this below do draw path  */
-          ctx.clearRect(0, 0, 500, 500);
           //Drawing rectangle at new position
+          redrawTarget();
           drawRect(x, y, wid, hei);
         });
         socket.on(`shoot`, (data) => {
           console.log("pew pew", data);
+          respawnTarget();
+          redrawTarget();
+
         });
       };
 
