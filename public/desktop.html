@@ -12,28 +12,28 @@
 
 <body>
   <div id="qr"></div>
-  <div id="myId"></div>
-  <style>
-    #myId {
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      background-color: red;
-      transition: 0.2s;
-    }
-  </style>
-  <canvas class="canvas"></canvas>
+  <canvas class="canvas" width="600" height="800"></canvas>
   <script src="/socket.io/socket.io.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
   <script>
     {
 
       let socket; // will be assigned a value later
-      
+      const box = document.getElementById('myId');
+      let x = 0;
+      let y = 0;
+      const wid = 20; //width of the drawn rectangle
+      const hei = 20; //height of the drawn rectangle
+      const canvas = document.querySelector("canvas");
+      const ctx = canvas.getContext('2d')
+
+      function drawRect(x, y, wid, hei) {
+        ctx.fillStyle = '#666'; // Fill color of rectangle drawn
+        ctx.fillRect(x, y, wid, hei); //This will draw a rectangle of 20x20
+      }
+
+
       const init = () => {
-        const box = document.getElementById('myId');
-        let x = 0;
-        let y = 0;
         console.log(box);
         socket = io.connect('/');
 
@@ -48,28 +48,43 @@
           qr.addData(url);
           qr.make();
           document.getElementById('qr').innerHTML = qr.createImgTag(4);
+
+          drawRect(x, y, wid, hei); //Drawing rectangle on initial load
         });
 
         //could've had one event for all moves but i did it for the sport
         socket.on(`moveUp`, (data) => {
           y -= 10;
           console.log("move up");
-          box.parseInt(box.style.top) - 5 + "px";
+          /* comment this below do draw path  */
+          ctx.clearRect(0, 0, 500, 500);
+          //Drawing rectangle at new position
+          drawRect(x, y, wid, hei);
+
         });
         socket.on(`moveDown`, (data) => {
           y += 10;
           console.log("move down");
-          box.style.top = y + "px";
+          /* comment this below do draw path  */
+          ctx.clearRect(0, 0, 500, 500);
+          //Drawing rectangle at new position
+          drawRect(x, y, wid, hei);
         });
         socket.on(`moveLeft`, (data) => {
-          y -= 10;
+          x -= 10;
           console.log("move left");
-          box.style.left = x + "px";
+          /* comment this below do draw path  */
+          ctx.clearRect(0, 0, 500, 500);
+          //Drawing rectangle at new position
+          drawRect(x, y, wid, hei);
         });
         socket.on(`moveRight`, (data) => {
-          y += 10;
+          x += 10;
           console.log("move right");
-          box.style.left = x + "px";
+          /* comment this below do draw path  */
+          ctx.clearRect(0, 0, 500, 500);
+          //Drawing rectangle at new position
+          drawRect(x, y, wid, hei);
         });
         socket.on(`shoot`, (data) => {
           console.log("pew pew", data);
