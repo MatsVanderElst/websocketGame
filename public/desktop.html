@@ -47,6 +47,12 @@
         ctx.fillRect(tx, ty, wid, hei); //This will draw a rectangle of 20x20
       }
 
+      const redrawCrossair = (newX, newY) =>{
+        ctx.clearRect(x, y, 20, 20);
+        x = newX;
+        y = newY;
+        drawRect(x, y, wid, hei);
+      }
 
 
       const init = () => {
@@ -71,36 +77,24 @@
 
         //could've had one event for all moves but i did it for the sport
         socket.on(`moveUp`, (data) => {
-          ctx.clearRect(x, y, 20, 20);
-          y -= 20;
           console.log("move up");
-          //Drawing rectangle at new position
           redrawTarget();
-          drawRect(x, y, wid, hei);
+          redrawCrossair(x, y - 20);
         });
         socket.on(`moveDown`, (data) => {
-          ctx.clearRect(x, y, 20, 20);
-          y += 20;
           console.log("move down");
-          //Drawing rectangle at new position
           redrawTarget();
-          drawRect(x, y, wid, hei);
+          redrawCrossair(x,  y + 20);
         });
         socket.on(`moveLeft`, (data) => {
-          ctx.clearRect(x, y, 20, 20);
-          x -= 20;
           console.log("move left");
-          //Drawing rectangle at new position
           redrawTarget();
-          drawRect(x, y, wid, hei);
+          redrawCrossair( x - 20, y);
         });
         socket.on(`moveRight`, (data) => {
-          ctx.clearRect(x, y, 20, 20);
-          x += 20;
           console.log("move right");
-          //Drawing rectangle at new position
           redrawTarget();
-          drawRect(x, y, wid, hei);
+          redrawCrossair( x + 20, y);
         });
         socket.on(`shoot`, (data) => {
           console.log("pew pew", data);
