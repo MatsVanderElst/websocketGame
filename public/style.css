@@ -1,0 +1,22 @@
+.body{
+    text-align: center;
+}
+
+.canvas {
+    border: 1px solid black;
+  }
+
+.ButtonContainer{
+    text-align: center;
+    margin-top: 30vh;
+}
+.button{
+    width: 4rem;
+    height: 4rem;
+    margin-top: 0.5rem;
+}
+p{
+    max-width: 40rem;
+    margin: 0 auto;
+    margin-bottom: 2rem;
+}

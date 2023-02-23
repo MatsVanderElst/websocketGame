@@ -3,7 +3,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
-
+<link rel="stylesheet" href="./style.css">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,17 +12,21 @@
 </head>
 
 <body>
-    <button class="buttonUp" onclick="handleMove('moveUp')">UP</button>
-    <button class="buttonDown" onclick="handleMove('moveDown')">DOWN</button>
-    <button class="buttonLeft" onclick="handleMove('moveLeft')">LEFT</button>
-    <button class="buttonRight" onclick="handleMove('moveRight')">RIGHT</button>
-    <button class="buttonShoot" onclick="handleSchoot()">SHOOT</button>
+    <div class="ButtonContainer">
+        <button class="button" onclick="handleMove('moveUp')">UP</button>
+        <div class="MiddlerowContainer">
+            <button class="button" onclick="handleMove('moveLeft')">LEFT</button>
+            <button class="button" onclick="handleSchoot()">SHOOT</button>
+            <button class="button" onclick="handleMove('moveRight')">RIGHT</button>
+        </div>
+        <button class="button" onclick="handleMove('moveDown')">DOWN</button>
+    </div>
     <script src="/socket.io/socket.io.js"></script>
     <script>
         {
 
-            let socket; // will be assigned a value later
-            
+            let socket;
+
             const getUrlParameter = name => {
                 name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
                 const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
@@ -30,17 +34,17 @@
                 return results === null ? false : decodeURIComponent(results[1].replace(/\+/g, ' '));
             };
 
-            function handleMove (direction) {
+            function handleMove(direction) {
                 console.log(direction);
                 if (socket.connected) {
-                    socket.emit(`move`, {targetSocketId: targetSocketId, direction: direction});
+                    socket.emit(`move`, { targetSocketId: targetSocketId, direction: direction });
                 }
             };
 
             function handleSchoot() {
                 console.log("pew pew pew");
                 if (socket.connected) {
-                    socket.emit(`shoot`, {targetSocketId: targetSocketId});
+                    socket.emit(`shoot`, { targetSocketId: targetSocketId });
                 }
             };
 
@@ -54,9 +58,6 @@
                 socket.on('connect', () => {
                     console.log(`Connected: ${socket.id}`);
                 });
-               
-                window.addEventListener(`onkeydown`, e => handleKeyDown(e));
-
 
             };
 

@@ -18,8 +18,6 @@ io.on('connection', socket => {
 })
 
   socket.on('move', (data) => {
-    //TODO: check wich key was pressed on the controller
-    /* io.to(targetSocketId).emit('moveUp'); */
     console.log(data);
     switch (data.direction) {
       case "moveUp":

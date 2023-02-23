@@ -8,43 +8,45 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Websocket maze game</title>
   <style class="style" css="*{margin:0px;overflow:hidden;}" type="text/css" rel="stylesheet"></style>
+  <link rel="stylesheet" href="./style.css">
 </head>
-
-<body>
+<body class="body">
+  <h1>Aim trainer</h1>
   <div id="qr"></div>
-  <canvas class="canvas" width="400" height="600"></canvas>
+  <p>Scan the qr code above with you mobile device and press the buttons to aim for the target! once you are close enough, press the fire button to shoot!</p>
+  <audio id="audio" src="./shotgun-firing-3-14483.mp3" preload="auto"  ></audio>
+  <canvas class="canvas" width="600" height="400"></canvas>
   <script src="/socket.io/socket.io.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
   <script>
     {
 
-      let socket; // will be assigned a value later
+      let socket; 
       const box = document.getElementById('myId');
-      let x = 0;
-      let y = 0;
+      let x = 298;
+      let y = 198;
       let tx = 0;
       let ty = 0;
-      const wid = 20; //width of the drawn rectangle
-      const hei = 20; //height of the drawn rectangle
+      const wid = 20; 
+      const hei = 20; 
       const canvas = document.querySelector("canvas");
       const ctx = canvas.getContext('2d')
+      let score = 0;
 
       function drawRect(x, y, wid, hei) {
-        ctx.fillStyle = '#666'; // Fill color of rectangle drawn
-        ctx.fillRect(x, y, wid, hei); //This will draw a rectangle of 20x20
+        ctx.fillStyle = '#666'; 
+        ctx.fillRect(x, y, wid, hei); 
       }
 
       const respawnTarget = () => {
-        ctx.clearRect(tx, ty, 500, 500);
-        tx = Math.floor(Math.random() * 400);
-        ty = Math.floor(Math.random() * 600);
-        redrawTarget();
+        tx = Math.floor(Math.random() * 600);
+        ty = Math.floor(Math.random() * 400);
       }
 
       const redrawTarget = () => {
         ctx.clearRect(tx, ty, 20, 20);
-        ctx.fillStyle = 'green'; // Fill color of rectangle drawn
-        ctx.fillRect(tx, ty, wid, hei); //This will draw a rectangle of 20x20
+        ctx.fillStyle = 'green'; 
+        ctx.fillRect(tx, ty, wid, hei); 
       }
 
       const redrawCrossair = (newX, newY) =>{
@@ -54,6 +56,33 @@
         drawRect(x, y, wid, hei);
       }
 
+      const redrawCanvas = (newX, newY, newTX ,newTY) => {
+        ctx.clearRect(tx, ty, 20, 20);
+        ctx.clearRect(x, y, 20, 20);
+        ctx.fillStyle = 'green'; 
+        ctx.fillRect(newTX, newTY, wid, hei); 
+        drawRect(newX, newY, wid, hei);
+        x = newX;
+        y = newY;
+        tx = newTX;
+        ty = newTY;
+      }
+
+      const checkRadius = () => {
+       const verschilX = Math.abs(x - tx);
+       console.log(verschilX);
+
+       const verschilY =  Math.abs(y - ty);
+       console.log(verschilY);
+
+       audio.play();
+        if (verschilX <= 9 && verschilY <= 9 ){
+          score += 1;
+          console.log("target hit");
+          redrawCanvas(x, y, Math.floor(Math.random() * 600), Math.floor(Math.random() * 400));
+          // mp3 
+        }
+      }
 
       const init = () => {
         console.log(box);
@@ -61,7 +90,8 @@
 
         socket.on('connect', () => {
           console.log(`Connected: ${socket.id}`);
-          const url = `${new URL(`/controller.html?id=${socket.id}`, window.location)}`;
+          //replace ip with current ip
+          const url = `http://10.120.1.228:3000/controller.html?id=${socket.id}`;
           console.log(url);
 
           const typeNumber = 4;
@@ -72,35 +102,28 @@
           document.getElementById('qr').innerHTML = qr.createImgTag(4);
 
           respawnTarget();
-          drawRect(x, y, wid, hei); //Drawing rectangle on initial load
+          drawRect(x, y, wid, hei); 
         });
 
-        //could've had one event for all moves but i did it for the sport
         socket.on(`moveUp`, (data) => {
           console.log("move up");
-          redrawTarget();
-          redrawCrossair(x, y - 20);
+          redrawCanvas(x, y - 20, tx, ty);
         });
         socket.on(`moveDown`, (data) => {
           console.log("move down");
-          redrawTarget();
-          redrawCrossair(x,  y + 20);
+          redrawCanvas(x, y + 20, tx, ty);
         });
         socket.on(`moveLeft`, (data) => {
           console.log("move left");
-          redrawTarget();
-          redrawCrossair( x - 20, y);
+          redrawCanvas( x - 20, y, tx, ty);
         });
         socket.on(`moveRight`, (data) => {
           console.log("move right");
-          redrawTarget();
-          redrawCrossair( x + 20, y);
+-          redrawCanvas( x + 20, y, tx, ty);
         });
         socket.on(`shoot`, (data) => {
           console.log("pew pew", data);
-          respawnTarget();
-          redrawTarget();
-
+          checkRadius()
         });
       };
 
